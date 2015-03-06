@@ -1,5 +1,6 @@
 # Sequence-Android-Game
-Sequence style game for android devices
+Sequence style game for android devices.  
+
 Sequence is a board game played with two decks of cards, including jokers, and 3 different colored coin tokens.  
 
 The board consists of a grid 10 x 10 filled with the cards from two standard decks. - But thats only 90! two decks in 104 or 108
