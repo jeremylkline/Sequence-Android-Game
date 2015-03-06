@@ -2,7 +2,9 @@
 import java.util.Scanner;
 
 //To-do
-/*Create loop to match card selected 
+/*Implement Jacks as wilds - removing from Game Board, but keeping in Play Deck
+ *Create loop to match card selected 
+ *Create joker and jack play mechanics
  *Create main game loop - Solo Play
  *Add Computer Player & Basic AI - 2 Player
  *Create Double Deck Board
