@@ -2,12 +2,12 @@
 import java.util.Scanner;
 
 //To-do
-/*Implement Jacks as wilds - removing from Game Board, but keeping in Play Deck
- *Create loop to match card selected 
+/*Double Player's Deck
+ *Create Player class to manipulate player's hands
+ *Create loop to match card selected and create function to update board
+ *accordingly
  *Create joker and jack play mechanics
- *Create main game loop - Solo Play
  *Add Computer Player & Basic AI - 2 Player
- *Create Double Deck Board
  *Add 3+ Players (Humans side-by-side / or Multiple Computers
  *Advanced AI - Easy / Medium / Hard
  *Graphics
@@ -32,74 +32,15 @@ public class Application {
 		//Keep track of Rounds
 		int round = 1;
 		
-		//Initialize a Deck of Cards /w Two Jokers
-		Deck deck = new Deck(false);
+		//Exit trigger
+		boolean exit = false;
 		
-		//Shuffle Deck
-		deck.shuffle();
-		
-		/*
-		int i = 0;
-		do{
-		Card yourCard = deck.dealCard();
-		System.out.println(yourCard);
-		i++;
-		}
-		while(i <= 53);
-		*/
-		
-		//Initialize a 2D Board to play on using String's
-		String[][] gameBoard = new String[7][9];
-		
-		//Initialize a Card Object
-		Card nextCard;
-		
-		//Add Wild Spots to Game Board
-		gameBoard[0][0] = "W";
-		gameBoard[6][0] = "W";
-		gameBoard[6][7] = "W";
-		gameBoard[0][7] = "W";
-		
-		//Add Row 1
-		for(int x = 1; x < 6; x++)
-		{
-			nextCard = deck.dealCard();
-			gameBoard[x][0] = nextCard.toString();
-		}
-		//Add Row 2, 3, 4, 5 and 6
-		for (int x = 0; x < 7; x++)
-		{
-			for (int y = 1; y < 7; y++)
-			{
-				nextCard = deck.dealCard();
-				gameBoard[x][y] = nextCard.toString();
-			}
-		}
-		//Add Row 7
-		for(int x = 1; x < 6; x++)
-		{
-			nextCard = deck.dealCard();
-			gameBoard[x][7] = nextCard.toString();
-		}
-		
-		//Print Board
-		System.out.println("Game Board");
-		for(int y = 0; y < 8; y++)
-		{
-			for(int x = 0; x < 7; x++)
-			{
-				System.out.printf("|" + gameBoard[x][y] + "|" + " ");
-			}
-			System.out.println();
-		}
-		System.out.println();
-		/*if (deck.cardsLeft() == 0)
-		{
-			System.out.println("The deck is now empty!");
-		}
-		*/
+		//Create a Gameboard, 1 for Static, 2 for Random
+		Board gameBoard = new Board(1);
 		
 		Scanner input = new Scanner(System.in);
+		
+		//Create Player's Deck
 		Deck playerDeck = new Deck(true);
 		
 		//Shuffle
@@ -110,59 +51,65 @@ public class Application {
 		
 		Card playerCard;
 		
-		//Initialize & display player's hand
-		System.out.println("You are dealt the following cards: ");
-		for(int i = 0; i < handSize; i++)
+		//Beginning Loop for player's hand
+		while(!exit)
 		{
-			playerCard = playerDeck.dealCard();
-			playerHand[i] = playerCard;
-			System.out.println("#" + (i+1) + "| " + playerHand[i].toString());
-		}
-		System.out.println();
-		
-		//Get Player's Choice to play card
-		System.out.println("Which card would you like to play? (Enter an Integer from 1 to 7)");
-		selection = input.nextInt();
-		//Force player to select an Int between 1 and 7, or default to 1
-		//doesn't stop player from putting in a double / char / string etc.
-		if(selection < 1 || selection > 7)
-		{
-			selection = 1;
-		}
-		System.out.println("You selected " + playerHand[(selection-1)]);
-		System.out.println();
-		
-		//Find card and place onto game board, changing entry to an "X" for player and an "O" for computer
-		
-		
-		//Replace the card with a new card, no need to reorganize hand
-		//If deck runs out, game is over - exit
-		if(playerDeck.cardsLeft() == 0)
-		{
-			//Exit Game
-		}
-		playerCard = playerDeck.dealCard();
-		playerHand[(selection-1)] = playerCard;
-		//Increment Round
-		round++;
-		
-		//Show new Board and new Hand
-		System.out.println("Game Board");
-		for(int y = 0; y < 8; y++)
-		{
-			for(int x = 0; x < 7; x++)
+			//Display Board
+			gameBoard.display();
+			
+			//Initialize & display player's hand
+			System.out.println("You hold the following cards: ");
+			for(int i = 0; i < handSize; i++)
 			{
-				System.out.printf("|" + gameBoard[x][y] + "|" + " ");
+				//If deck is empty, end game
+				if(playerDeck.cardsLeft() == 0)
+				{
+					exit = true;
+					System.out.println("Sorry you are out of cards! You lose!");
+					break;
+				}
+				playerCard = playerDeck.dealCard();
+				playerHand[i] = playerCard;
+				System.out.println("#" + (i+1) + "| " + playerHand[i].toString());
 			}
 			System.out.println();
-		}
-		System.out.println();
-		System.out.println("Your Hand - Round " + round);
-		System.out.println();
-		for(int i = 0; i < handSize; i++)
-		{
-			System.out.println("#" + (i+1) + "| " + playerHand[i].toString());
-		}
 		
+			//Get Player's Choice to play card
+			System.out.println("Which card would you like to play? (Enter an Integer from 1 to 7, or Enter 0 to Exit Game)");
+			selection = input.nextInt();
+			//Force player to select an Int between 1 and 7, or default to 1
+			//doesn't stop player from putting in a double / char / string etc.
+			if(selection < 0 || selection > 7)
+			{
+				selection = 1;
+			}
+			if(selection == 0)
+			{
+				exit = true;
+				break;
+			}
+			System.out.println("You selected " + playerHand[(selection-1)]);
+			System.out.println();
+		
+			//Find card and place onto game board, changing entry to an "X" for player and an "O" for computer
+		
+		
+			//Replace the card with a new card, no need to reorganize hand
+			//If deck runs out, game is over - exit
+			if(playerDeck.cardsLeft() == 0)
+			{
+				exit = true;
+				System.out.println("Sorry you are out of cards! You lose!");
+				break;
+			}
+			playerCard = playerDeck.dealCard();
+			playerHand[(selection-1)] = playerCard;
+		
+			//Increment Round
+			round++;
+		
+			//Loop Back to updated board and new hand of cards
+		}
+		System.out.println("Thanks for playing!");
 	}
 }
