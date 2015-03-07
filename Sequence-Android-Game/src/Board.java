@@ -5,6 +5,23 @@ public class Board {
 	private Deck deck = new Deck(false);
 	private Deck deck2 = new Deck(false);
 	private Card nextCard;
+	private Deck playerDeck = new Deck(true);
+	private Deck playerDeck2 = new Deck(true);
+	private Card newCard;
+	
+	//Method of dealing one card to player, uses the first deck until empty, and then the 2nd one.
+	public Card dealCard()
+	{
+		if(playerDeck.cardsLeft() != 0)
+		{
+			newCard = playerDeck.dealCard();
+		}
+		else
+		{
+			newCard = playerDeck2.dealCard();
+		}
+		return newCard;
+	}
 	
 	public Board(int option)
 	{
@@ -58,7 +75,16 @@ public class Board {
 		{
 			//todo
 		}
+		//Shuffle Player's Decks
+		playerDeck.shuffle();
+		playerDeck2.shuffle();
 	}
+	
+	public void changeBoard(int x, int y, String color)
+	{
+		gameBoard[x][y] = color;
+	}
+	
 	public void display()
 	{
 		System.out.println("Game Board");
