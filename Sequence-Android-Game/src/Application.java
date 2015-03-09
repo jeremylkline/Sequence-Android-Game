@@ -51,12 +51,9 @@ public class Application {
 			System.out.println("-----------------------------------------");
 			System.out.println("Player #1: ");
 			playerOne.displayHand();
-			System.out.println("-----------------------------------------");
-			System.out.println("Player #2: ");
-			playerTwo.displayHand();
 			
 			//Take a card away and replace it.
-			System.out.println("Player #1, Which card will you play? (Enter the integer)");
+			System.out.println("Player #1, Which card will you play? (Enter the integer)" + "Round: " + round);
 			Scanner input = new Scanner(System.in);
 			//Subtract 1 to reference the array starts at 0 not 1, force a selection between 1 and hand size
 			//default selection is 1st card

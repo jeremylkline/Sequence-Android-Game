@@ -8,6 +8,7 @@ public class Board {
 	private Deck playerDeck = new Deck(true);
 	private Deck playerDeck2 = new Deck(true);
 	private Card newCard;
+	private String[][] gameBoardBackup = new String[10][10];
 	
 	//Method of dealing one card to player, uses the first deck until empty, and then the 2nd one.
 	public Card dealCard()
@@ -37,6 +38,7 @@ public class Board {
 					   x == 9 && y == 9 || x == 0 && y == 9)
 					{
 						gameBoard[x][y] = "W";
+						gameBoardBackup[x][y] = "W";
 					}
 					else
 					{
@@ -52,6 +54,7 @@ public class Board {
 								nextCard = deck.dealCard();
 							}
 							gameBoard[x][y] = nextCard.toString();
+							gameBoardBackup[x][y] = nextCard.toString();
 						}
 						//Add Cards from Deck 2 now that Deck 1 is out
 						else
@@ -65,6 +68,7 @@ public class Board {
 								nextCard = deck2.dealCard();
 							}
 							gameBoard[x][y] = nextCard.toString();
+							gameBoardBackup[x][y] = nextCard.toString();
 						}
 					}
 				}
@@ -79,6 +83,15 @@ public class Board {
 		playerDeck.shuffle();
 		playerDeck2.shuffle();
 	}
+	public String gameBoardBackup(int x, int y)
+	{
+		return gameBoardBackup[x][y];
+	}
+	
+	public String gameBoard(int x, int y)
+	{
+		return gameBoard[x][y];
+	}
 	
 	public void changeBoard(int x, int y, String color)
 	{
@@ -92,7 +105,17 @@ public class Board {
 		{
 			for(int x = 0; x < 10; x++)
 			{
-				System.out.printf("|" + gameBoard[x][y] + "|" + " ");
+				//Print Current Name
+				System.out.printf("|" + gameBoard[x][y]);
+				//If a token is played, print card name behind current name)
+				if(gameBoard[x][y] == "Blue" || gameBoard[x][y] == "Green")
+				{
+					System.out.printf(" On " + gameBoardBackup[x][y] + "|" + " ");
+				}
+				else
+				{
+					System.out.printf("|" + " ");
+				}
 			}
 			System.out.println();
 		}
