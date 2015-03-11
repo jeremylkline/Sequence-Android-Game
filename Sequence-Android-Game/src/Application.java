@@ -1,12 +1,9 @@
 //To handle inputs
 import java.util.Scanner;
-
+//Random numbers
+import java.util.Random;
 //To-do
-/*
- *
- *Create loop to match card selected and create function to update board
- *accordingly
- *Create joker and jack play mechanics
+/*Create algorithm to test for win condition
  *Add Computer Player & Basic AI - 2 Player
  *Add 3+ Players (Humans side-by-side / or Multiple Computers
  *Advanced AI - Easy / Medium / Hard
@@ -40,6 +37,10 @@ public class Application {
 		Player playerOne = new Player(true, 2, gameBoard);
 		
 		Player playerTwo = new Player(false, 2, gameBoard);		
+		
+		Random randomNum = new Random();
+		
+		Scanner input = new Scanner(System.in);
 	
 		//Beginning Loop for player's hand
 		while(!exit)
@@ -47,41 +48,63 @@ public class Application {
 			//Display Board
 			gameBoard.display();
 			
-			//Display player's hand
-			System.out.println("-----------------------------------------");
-			System.out.println("Player #1: ");
-			playerOne.displayHand();
-			
-			//Take a card away and replace it.
-			System.out.println("Player #1, Which card will you play? (Enter the integer)" + "Round: " + round);
-			Scanner input = new Scanner(System.in);
-			//Subtract 1 to reference the array starts at 0 not 1, force a selection between 1 and hand size
-			//default selection is 1st card
-			selection = input.nextInt() - 1;
-			if(selection < 0 || selection > (playerOne.getHandsize()-1))
+			if(playerOne.isHuman())
 			{
-				selection = 0;
+				//Display player's hand
+				System.out.println("-----------------------------------------");
+				System.out.println("Player #1: ");
+				playerOne.displayHand();
+			
+				//Take a card away and replace it.
+				System.out.println("Player #1, Which card will you play? (Enter the integer)" + "Round: " + round);
+				input = new Scanner(System.in);
+				//Subtract 1 to reference the array starts at 0 not 1, force a selection between 1 and hand size
+				//default selection is 1st card
+				selection = input.nextInt() - 1;
+				if(selection < 0 || selection > (playerOne.getHandsize()-1))
+				{
+					selection = 0;
+				}
+				playerOne.playCard(selection, gameBoard, "Blue");
 			}
-			playerOne.playCard(selection, gameBoard, "Blue");
-		
-			//Get Player's Choice to play card
+			else
+			{
+				selection = randomNum.nextInt(playerTwo.getHandsize());
+				playerOne.playCard(selection, gameBoard, "Blue");
+			}
 			
-			//Force player to select an Int between 1 and 7, or default to 1
-			//doesn't stop player from putting in a double / char / string etc.
+			if(playerTwo.isHuman())
+			{
+				//Display player's hand
+				System.out.println("-----------------------------------------");
+				System.out.println("Player #2: ");
+				playerOne.displayHand();
 			
-		
-			//Find card and place onto game board, changing entry to an "X" for player and an "O" for computer
-		
-		
-			//Replace the card with a new card, no need to reorganize hand
-			//If deck runs out, game is over - exit
-			
+				//Take a card away and replace it.
+				System.out.println("Player #2, Which card will you play? (Enter the integer)" + "Round: " + round);
+				input = new Scanner(System.in);
+				//Subtract 1 to reference the array starts at 0 not 1, force a selection between 1 and hand size
+				//default selection is 1st card
+				selection = input.nextInt() - 1;
+				if(selection < 0 || selection > (playerOne.getHandsize()-1))
+				{
+					selection = 0;
+				}
+				playerTwo.playCard(selection, gameBoard, "Green");
+			}
+			else
+			{
+				selection = randomNum.nextInt(playerTwo.getHandsize());
+				playerTwo.playCard(selection, gameBoard, "Green");
+			}
+
 		
 			//Increment Round
 			round++;
 		
 			//Loop Back to updated board and new hand of cards
 		}
+		input.close();
 		System.out.println("Thanks for playing!");
 	}
 }
