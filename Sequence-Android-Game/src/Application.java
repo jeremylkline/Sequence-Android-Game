@@ -3,10 +3,9 @@ import java.util.Scanner;
 //Random numbers
 import java.util.Random;
 //To-do
-/*Create algorithm to test for win condition
- *Add Computer Player & Basic AI - 2 Player
+/*Finish algorithm for win condition - all done except Diagonals & Badass
  *Add 3+ Players (Humans side-by-side / or Multiple Computers
- *Advanced AI - Easy / Medium / Hard
+ *Advanced AI - Easy / Medium / Hard - Currently random
  *Graphics
  *Android Version
  */

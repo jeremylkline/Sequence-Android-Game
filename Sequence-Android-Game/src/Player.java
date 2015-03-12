@@ -15,6 +15,12 @@ public class Player {
 	private int threeChances;
 	private Scanner input;
 	private int choice;
+	private int horizontalTokens;
+	private int verticalTokens;
+	private int diagonalTokens;
+	private int totalTokens;
+	private int sequences;
+	private boolean wildSequence;
 	
 	public boolean isHuman()
 	{
@@ -33,6 +39,11 @@ public class Player {
 		xCoordB = 0;
 		yCoordA = 0;
 		yCoordB = 0;
+		totalTokens = 0;
+		horizontalTokens = 0;
+		verticalTokens = 0;
+		diagonalTokens = 0;
+		sequences = 0;
 		
 		//Check to see if this player is human, or computer
 		if(isHuman)
@@ -723,7 +734,277 @@ public class Player {
 		
 		}
 		//Test for "Sequence" - Win condition - and call endGame function
+		//To win the game you must have "2 Sequences", a Sequence is a row of 5 tokens that are consecutive and go either horizontal, diagonal, or vertical.
+		/*Examples of Valid Sequences
+		 * 		0	1	2	3	4	5	6	7	8	9
+		 * 	0	W	0	0	0	0	0	0	0	0	W
+		 *  1	X	X	X	X	X	0	0	0	X	0	
+		 *  2	0	0	0	0	0	0	0	X	X	0	
+		 *  3	0	0	0	0	0	0	X	0	X	0	
+		 *  4	0	0	0	0	0	X	0	0	X	0	
+		 * 	5	0	0	0	0	0	0	0	0	X	0	
+		 * 	6	0	0	0	0	0	0	0	0	0	0	
+		 *  7	0	0	0	0	0	0	0	0	0	0	
+		 *  8	0	0	0	0	0	0	0	0	0	0
+		 *  9	W 	0	0	0	0	0	0	0	0	W
+		 */
+		//A sequence can use at most 1 token from a prior sequence, and a sequence can include 1 Wild square.  So the first sequence at minimum needs 4 tokens.  The second
+		//one would need 4 more, for a minimum of 8
+		//Find tokens
+		//reset values to default, so we dont' give credit for the last player's tokens
+		totalTokens = 0;
+		sequences = 0;
 		
+		for(int x = 0; x < 10; x++)
+		{
+			for(int y = 0; y < 10; y++)
+				{
+					//Find all of the current player's tokens
+					if(gameBoard.gameBoard(x, y).equals(color))
+					{
+						//increment total tokens
+						totalTokens++;
+					}
+				}
+		}
+		//If they don't have 8, they can't "win", give up now
+		if(totalTokens >= 8)
+		{
+				//Check for Badass Wins - IE all of 1 row, all of 1 column, or all of 1 diagonal
+				/*
+				 * X X X X X X X X X X
+				 * X X             X
+				 * X   X         X
+				 * X     X     X
+				 * X       X X
+				 * X       X X
+				 * X     X     X
+				 * X   X         X
+				 * X X             X
+				 * X                 X
+				 */
+			
+			
+				//Then check for normal sequences
+				//Horizontal Checks
+				for(int y = 0; y <10; y++)
+				{
+					if(checkForHorizontalSequence(gameBoard, color, y))
+					{
+						if(humanPlayer)
+							{
+								playerScore += 50;
+								System.out.println("You got a Horizontal Sequence!");
+							}
+						if(!humanPlayer)
+							{
+								playerScore += 50;
+								System.out.println("Computer got a Horizontal Sequence!");
+							}
+						sequences++;
+					}
+				}
+				//Vertical Checks
+				for(int x = 0; x < 10; x++)
+				{
+					if(checkForVerticalSequence(gameBoard, color, x))
+					{
+						if(humanPlayer)
+						{
+							playerScore += 50;
+							System.out.println("You got a Vertical Sequence!");		
+						}
+						if(!humanPlayer)
+						{
+							playerScore += 50;
+							System.out.println("Computer got a Vertical Sequence!");
+						}
+						sequences++;
+					}
+				}
+				
+				//Diagonal Checks
+				
+		}
+		if(sequences >= 2)
+		{
+			//End Game
+			playerScore += (100 * sequences);
+			System.out.println("Congrats you won!  Your score was: " + playerScore);
+		}
+		
+	}
+	public boolean checkForVerticalSequence(Board gameBoard, String color, int column)
+	{
+		boolean found = false;
+		//Check for Wild Sequences
+		if(column == 0 || column == 9)
+		{
+			//Sequence in Primary Position
+			if(		gameBoard.gameBoard(column,1).equals(color) &&
+					gameBoard.gameBoard(column,2).equals(color) &&
+					gameBoard.gameBoard(column,3).equals(color) &&
+					gameBoard.gameBoard(column,4).equals(color)
+			  )
+			{
+				found = true;
+			}
+			if(		gameBoard.gameBoard(column,5).equals(color) &&
+					gameBoard.gameBoard(column,6).equals(color) &&
+					gameBoard.gameBoard(column,7).equals(color) &&
+					gameBoard.gameBoard(column,8).equals(color)
+			  )
+			{
+				found = true;
+			}
+		}
+		else
+		{
+			//Sequence in Primary Position
+			if(		gameBoard.gameBoard(column,0).equals(color) &&
+					gameBoard.gameBoard(column,1).equals(color) &&
+					gameBoard.gameBoard(column,2).equals(color) &&
+					gameBoard.gameBoard(column,3).equals(color) &&
+					gameBoard.gameBoard(column,4).equals(color)
+			  )
+			{
+				found = true;
+			}
+			else if(gameBoard.gameBoard(column,1).equals(color) &&
+					gameBoard.gameBoard(column,2).equals(color) &&
+					gameBoard.gameBoard(column,3).equals(color) &&
+					gameBoard.gameBoard(column,4).equals(color) &&
+					gameBoard.gameBoard(column,5).equals(color)
+			       )
+			{
+				found = true;
+			}
+			else if(gameBoard.gameBoard(column,2).equals(color) &&
+					gameBoard.gameBoard(column,3).equals(color) &&
+					gameBoard.gameBoard(column,4).equals(color) &&
+					gameBoard.gameBoard(column,5).equals(color) &&
+					gameBoard.gameBoard(column,6).equals(color)
+			       )
+			{
+				found = true;
+			}
+			else if(gameBoard.gameBoard(column,3).equals(color) &&
+					gameBoard.gameBoard(column,4).equals(color) &&
+					gameBoard.gameBoard(column,5).equals(color) &&
+					gameBoard.gameBoard(column,6).equals(color) &&
+					gameBoard.gameBoard(column,7).equals(color)
+			       )
+			{
+				found = true;
+			}
+			else if(gameBoard.gameBoard(column,4).equals(color) &&
+					gameBoard.gameBoard(column,5).equals(color) &&
+					gameBoard.gameBoard(column,6).equals(color) &&
+					gameBoard.gameBoard(column,7).equals(color) &&
+					gameBoard.gameBoard(column,8).equals(color)
+			       )
+			{
+				found = true;
+			}
+			else if(gameBoard.gameBoard(column,5).equals(color) &&
+					gameBoard.gameBoard(column,6).equals(color) &&
+					gameBoard.gameBoard(column,7).equals(color) &&
+					gameBoard.gameBoard(column,8).equals(color) &&
+					gameBoard.gameBoard(column,9).equals(color)
+			       )
+			{
+				found = true;
+			}
+		}
+		return found;
+	}
+	
+	public boolean checkForHorizontalSequence(Board gameBoard, String color, int row)
+	{
+		boolean found = false;
+		//If Row is 0 or 9, Check for Wild Sequences
+		if(row == 0 || row == 9)
+		{
+			//Sequence in Primary Position
+			if(		gameBoard.gameBoard(1,row).equals(color) &&
+					gameBoard.gameBoard(2,row).equals(color) &&
+					gameBoard.gameBoard(3,row).equals(color) &&
+					gameBoard.gameBoard(4,row).equals(color)
+			  )
+			{
+				found = true;
+			}
+			//Sequence in Primary Position
+			else if(	gameBoard.gameBoard(5,row).equals(color) &&
+						gameBoard.gameBoard(6,row).equals(color) &&
+						gameBoard.gameBoard(7,row).equals(color) &&
+						gameBoard.gameBoard(8,row).equals(color)
+				   )
+			{
+				found = true;
+			}
+		}
+		//Else check for normal sequence
+		else
+		{
+			//Sequence in Primary Position
+			if(		gameBoard.gameBoard(0,row).equals(color) &&
+					gameBoard.gameBoard(1,row).equals(color) &&
+					gameBoard.gameBoard(2,row).equals(color) &&
+					gameBoard.gameBoard(3,row).equals(color) &&
+					gameBoard.gameBoard(4,row).equals(color)
+			  )
+			{
+				found = true;
+			}
+			//Sequence in +1 Offset
+			else if(		gameBoard.gameBoard(1,row).equals(color) &&
+					gameBoard.gameBoard(2,row).equals(color) &&
+					gameBoard.gameBoard(3,row).equals(color) &&
+					gameBoard.gameBoard(4,row).equals(color) &&
+					gameBoard.gameBoard(5,row).equals(color)
+			  )
+			{
+				found = true;
+			}
+			else if(		gameBoard.gameBoard(2,row).equals(color) &&
+					gameBoard.gameBoard(3,row).equals(color) &&
+					gameBoard.gameBoard(4,row).equals(color) &&
+					gameBoard.gameBoard(5,row).equals(color) &&
+					gameBoard.gameBoard(6,row).equals(color)
+			  )
+			{
+				found = true;
+			}
+			else if(		gameBoard.gameBoard(3,row).equals(color) &&
+					gameBoard.gameBoard(4,row).equals(color) &&
+					gameBoard.gameBoard(5,row).equals(color) &&
+					gameBoard.gameBoard(6,row).equals(color) &&
+					gameBoard.gameBoard(7,row).equals(color)
+			  )
+			{
+				found = true;
+			}
+			else if(		gameBoard.gameBoard(4,row).equals(color) &&
+					gameBoard.gameBoard(5,row).equals(color) &&
+					gameBoard.gameBoard(6,row).equals(color) &&
+					gameBoard.gameBoard(7,row).equals(color) &&
+					gameBoard.gameBoard(8,row).equals(color)
+			  )
+			{
+				found = true;
+			}
+			else if(		gameBoard.gameBoard(5,row).equals(color) &&
+					gameBoard.gameBoard(6,row).equals(color) &&
+					gameBoard.gameBoard(7,row).equals(color) &&
+					gameBoard.gameBoard(8,row).equals(color) &&
+					gameBoard.gameBoard(9,row).equals(color)
+			  )
+			{
+				found = true;
+			}
+		}
+		return found;
 	}
 	
 	public int getHandsize()
