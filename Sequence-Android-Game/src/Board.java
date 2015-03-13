@@ -1,3 +1,23 @@
+/*<Sequence-Like Game for Java & Android>
+    Copyright (C) 2015  Jeremy L. Kline
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+ 	any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+	Jeremy Kline can be reached at jkline@gameneticevo.com & by mail - 
+	33 N Lingle Ave. Hershey, PA 17033
+ * 
+ */
 
 public class Board {
 	
@@ -29,55 +49,57 @@ public class Board {
 		//Static GameBoard - not Random
 		if(option == 1)
 		{
-			for(int x = 0; x < 10; x++)
-			{
-				for(int y = 0; y < 10; y++)
-				{
-					//Add Wild Spots to Game Board if we are at the corners
-					if(x == 0 && y == 0 || x == 9 && y == 0 ||
-					   x == 9 && y == 9 || x == 0 && y == 9)
-					{
-						gameBoard[x][y] = "W";
-						gameBoardBackup[x][y] = "W";
-					}
-					else
-					{
-						//Add Cards from Deck 1 until empty
-						if(deck.cardsLeft() > 0)
-						{
-							nextCard = deck.dealCard();
-							//do not add Jacks
-							if(nextCard.getValue() == 11)
-							{
-								//It's a Jack, so get a new card,  & since the deck
-								//isn't shuffled, the next card cannot be a Jack
-								nextCard = deck.dealCard();
-							}
-							gameBoard[x][y] = nextCard.toString();
-							gameBoardBackup[x][y] = nextCard.toString();
-						}
-						//Add Cards from Deck 2 now that Deck 1 is out
-						else
-						{
-							nextCard = deck2.dealCard();
-							//do not add Jacks
-							if(nextCard.getValue() == 11)
-							{
-								//It's a Jack, so get a new card,  & since the deck
-								//isn't shuffled, the next card cannot be a Jack
-								nextCard = deck2.dealCard();
-							}
-							gameBoard[x][y] = nextCard.toString();
-							gameBoardBackup[x][y] = nextCard.toString();
-						}
-					}
-				}
-			}
+			//Static no shuffling
 		}
 		//Random Game Board
 		if(option == 2)
 		{
-			//todo
+			deck.shuffle();
+			deck2.shuffle();
+		}
+		for(int x = 0; x < 10; x++)
+		{
+			for(int y = 0; y < 10; y++)
+			{
+				//Add Wild Spots to Game Board if we are at the corners
+				if(x == 0 && y == 0 || x == 9 && y == 0 ||
+				   x == 9 && y == 9 || x == 0 && y == 9)
+				{
+					gameBoard[x][y] = "W";
+					gameBoardBackup[x][y] = "W";
+				}
+				else
+				{
+					//Add Cards from Deck 1 until empty
+					if(deck.cardsLeft() > 0)
+					{
+						nextCard = deck.dealCard();
+						//do not add Jacks
+						if(nextCard.getValue() == 11)
+						{
+							//It's a Jack, so get a new card,  & since the deck
+							//isn't shuffled, the next card cannot be a Jack
+							nextCard = deck.dealCard();
+						}
+						gameBoard[x][y] = nextCard.toString();
+						gameBoardBackup[x][y] = nextCard.toString();
+					}
+					//Add Cards from Deck 2 now that Deck 1 is out
+					else
+					{
+						nextCard = deck2.dealCard();
+						//do not add Jacks
+						if(nextCard.getValue() == 11)
+						{
+							//It's a Jack, so get a new card,  & since the deck
+							//isn't shuffled, the next card cannot be a Jack
+							nextCard = deck2.dealCard();
+						}
+						gameBoard[x][y] = nextCard.toString();
+						gameBoardBackup[x][y] = nextCard.toString();
+					}
+				}
+			}
 		}
 		//Shuffle Player's Decks
 		playerDeck.shuffle();

@@ -1,3 +1,24 @@
+/*<Sequence-Like Game for Java & Android>
+    Copyright (C) 2015  Jeremy L. Kline
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+ 	any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+	Jeremy Kline can be reached at jkline@gameneticevo.com & by mail - 
+	33 N Lingle Ave. Hershey, PA 17033
+ * 
+ */
+
 import java.util.Scanner;
 
 public class Player {
@@ -15,12 +36,10 @@ public class Player {
 	private int threeChances;
 	private Scanner input;
 	private int choice;
-	private int horizontalTokens;
-	private int verticalTokens;
-	private int diagonalTokens;
 	private int totalTokens;
 	private int sequences;
-	private boolean wildSequence;
+	private int badAssCounter;
+	private boolean badAssWin;
 	
 	public boolean isHuman()
 	{
@@ -40,9 +59,6 @@ public class Player {
 		yCoordA = 0;
 		yCoordB = 0;
 		totalTokens = 0;
-		horizontalTokens = 0;
-		verticalTokens = 0;
-		diagonalTokens = 0;
 		sequences = 0;
 		
 		//Check to see if this player is human, or computer
@@ -783,8 +799,80 @@ public class Player {
 				 * X X             X
 				 * X                 X
 				 */
-			
-			
+				//Reset badAss vars
+				badAssCounter = 0;
+				badAssWin = false;
+				
+				//Check along the rows
+				while(badAssCounter < 10)
+				{
+					//check for 10 in a row along the X axis
+					for(int x = 0; x < 10; x++)
+					{
+						badAssCounter = 0;
+						for(int y = 0; y < 10; y++)
+						{
+							if(gameBoard.gameBoard(x,y).equals(color))
+							{
+								badAssCounter++;
+							}
+						}
+					}
+					badAssCounter = 0;
+					//check for 10 in a row along the Y axis
+					for(int y = 0; y < 10; y++)
+					{
+						badAssCounter = 0;
+						for(int x = 0; x < 10; x++)
+						{
+							if(gameBoard.gameBoard(x, y).equals(color))
+							{
+								badAssCounter++;
+							}
+						}
+					}
+					badAssCounter = 0;
+					//check for 10 in a row along the NW to SE
+					for(int x = 0; x < 10; x++)
+					{
+						for(int y = 0; y < 10; y++)
+						{
+							if(gameBoard.gameBoard(x,y).equals(color))
+							{
+								//NW to SE route
+								if(x == 1 && y == 1 ||
+								   x == 2 && y == 2 ||
+								   x == 3 && y == 3 ||
+								   x == 4 && y == 4 ||
+								   x == 5 && y == 5 ||
+								   x == 6 && y == 6 ||
+								   x == 7 && y == 7 ||
+								   x == 8 && y == 8	  )
+								{
+									badAssCounter++;
+								}
+								//NE to SW route
+								if(x == 8 && y == 1 ||
+								   x == 7 && y == 2 ||
+								   x == 6 && y == 3 ||
+								   x == 5 && y == 4 ||
+								   x == 4 && y == 5 ||
+								   x == 3 && y == 6 ||
+								   x == 2 && y == 7 ||
+								   x == 1 && y == 8   )
+								{
+									badAssCounter++;
+								}
+							}
+						}
+					}
+				}
+				if(badAssCounter == 10)
+				{
+					badAssWin = true;
+					playerScore += 200;
+					sequences = 2;
+				}
 				//Then check for normal sequences
 				//Horizontal Checks
 				for(int y = 0; y <10; y++)
@@ -831,9 +919,157 @@ public class Player {
 			//End Game
 			playerScore += (100 * sequences);
 			System.out.println("Congrats you won!  Your score was: " + playerScore);
+			System.out.println("Enter any value to exit!");
+			input = new Scanner(System.in);
+			choice = input.nextInt();
+			input.close();
+			System.exit(0);
 		}
 		
 	}
+	
+	public boolean checkForDiagonalSequence(Board gameBoard, String color)
+	{
+		boolean found = false;
+		boolean exit = false;
+		//Check for Wild Sequences - (1,1) - (4,4) || (8,1) - (5,4) || (1,8) - (4,5) || (8,8) - (5,5)
+		if(	gameBoard.gameBoard(1, 1).equals(color) &&
+			gameBoard.gameBoard(2, 2).equals(color) &&
+			gameBoard.gameBoard(3, 3).equals(color) &&
+			gameBoard.gameBoard(4, 4).equals(color)
+			)
+		{
+			found = true;
+		}
+		else if( gameBoard.gameBoard(8, 1).equals(color) &&
+			gameBoard.gameBoard(7, 2).equals(color) &&
+			gameBoard.gameBoard(6, 3).equals(color) &&
+			gameBoard.gameBoard(5, 4).equals(color)
+			)
+		{
+			found = true;
+		}
+		else if( gameBoard.gameBoard(1, 8).equals(color) &&
+			gameBoard.gameBoard(2, 7).equals(color) &&
+			gameBoard.gameBoard(3, 6).equals(color) &&
+			gameBoard.gameBoard(4, 5).equals(color)
+			)
+		{
+				found = true;
+		}
+		else if( gameBoard.gameBoard(8, 8).equals(color) &&
+			gameBoard.gameBoard(7, 7).equals(color) &&
+			gameBoard.gameBoard(6, 6).equals(color) &&
+			gameBoard.gameBoard(5, 5).equals(color)
+			)
+		{
+					found = true;
+		}
+		//Check for normal sequences
+		int counter = 0;
+		while(!found || !exit)
+		{
+		for(int x = 0; x < 10; x++)
+		{
+			for(int y = 0; y < 10; y++)
+			{
+				
+				//test NE for 5 matches
+				for(int z = 0; z < 6; z++)
+				{
+					//if we have a token, search NE for the next one, but be aware of boundaries
+					if(gameBoard.gameBoard(x,y).equals(color))
+					{
+						if(x < 9 && y < 9)
+						{
+							x++;
+							y++;
+							counter++;
+						}
+					}
+				}
+				if(counter >= 5)
+				{
+					found = true;
+					exit = true;
+				}
+				else
+				{
+					counter = 0;
+				}
+				//test SW for 5 matches
+				for(int z = 0; z < 6; z++)
+				{
+					//if we have a token, search SW for the next one, but be aware of boundaries
+					if(gameBoard.gameBoard(x,y).equals(color))
+					{
+						if(x > 0 && y > 0)
+						{
+							x--;
+							y--;
+							counter++;
+						}
+					}
+				}
+				if(counter >= 5)
+				{
+					found = true;
+					exit = true;
+				}
+				else
+				{
+					counter = 0;
+				}
+				//test SE for 5 matches
+				for(int z = 0; z < 6; z++)
+				{
+					if(gameBoard.gameBoard(x,y).equals(color))
+					{
+						if(x < 9 && y > 0)
+						{
+							x++;
+							y--;
+							counter++;
+						}
+					}
+				}
+				if(counter >= 5)
+				{
+					found = true;
+					exit = true;
+				}
+				else
+				{
+					counter = 0;
+				}
+				//Test NW for 5 matches
+				for(int z = 0; z < 6; z++)
+				{
+					if(gameBoard.gameBoard(x,y).equals(color))
+					{
+						if(x > 0 && y < 9)
+						{
+							x--;
+							y++;
+							counter++;
+						}
+					}
+				}
+				if(counter >= 5)
+				{
+					found = true;
+					exit = true;
+				}
+			}
+		}
+		//If we have checked every value and haven't gotten a diagonal sequence, there isn't one
+		exit = true;
+		}
+		
+		
+		return found;
+	}
+	
 	public boolean checkForVerticalSequence(Board gameBoard, String color, int column)
 	{
 		boolean found = false;

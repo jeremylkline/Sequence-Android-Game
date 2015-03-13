@@ -1,3 +1,26 @@
+/*<Sequence-Like Game for Java & Android>
+
+    Copyright (C) 2015  Jeremy L. Kline
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+ 	any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+	Jeremy Kline can be reached at jkline@gameneticevo.com & by mail - 
+	33 N Lingle Ave. Hershey, PA 17033
+ * 
+ */
+
+
 //To handle inputs
 import java.util.Scanner;
 //Random numbers
@@ -11,15 +34,17 @@ import java.util.Random;
  */
 
 
-
 public class Application {
 	public static void main(String[] args) {
-		//Welcome & How to Play
-		System.out.println("Welcome to Mini-Sequence, a card and board game!");
-		System.out.println("The object of the game is to play cards on the board");
-		System.out.println("in order to place 4 in a row either horizontal, diagonal");
-		System.out.println(" or vertical.");
-		System.out.println();
+		
+		gameFrame gFrame = new gameFrame();
+		
+		gFrame.createAndShowGUI();
+		gFrame.displayText("Sequence-Like Game  Copyright (C) 2015  Jeremy L. Kline\n\n"
+				+ "Welcome to Mini-Sequence, a card and board game!\n\n"
+				+ "The object of the game is to play cards on the board"
+				+ " in order to place 5 in a row either horizontal, diagonal"
+				+ " or vertical.", "BLACK");
 		
 		//Int to store borrowers card choices
 		int selection;
@@ -30,7 +55,7 @@ public class Application {
 		boolean exit = false;
 		
 		//Create a Gameboard, 1 for Static, 2 for Random
-		Board gameBoard = new Board(1);
+		Board gameBoard = new Board(2);
 		
 		//Create Players
 		Player playerOne = new Player(true, 2, gameBoard);
